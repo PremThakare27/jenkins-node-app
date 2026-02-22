@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        SERVER_IP      = '172.31.1.174'
+        SERVER_IP      = '172.31.21.127'
         SSH_CREDENTIAL = 'node-app-key'
-        REPO_URL       = 'https://github.com/iamtruptimane/node-js-app-CICD.git'
+        REPO_URL       = 'https://github.com/PremThakare27/jenkins-node-app.git'
         BRANCH         = 'main'
         REMOTE_USER    = 'ubuntu'
         REMOTE_PATH    = '/home/ubuntu/node-app'
@@ -23,6 +23,8 @@ pipeline {
                 sshagent([SSH_CREDENTIAL]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} 'mkdir -p ${REMOTE_PATH}'
+                        # We use -r to copy the entire directory and -o StrictHostKeyChecking=no to avoid host key verification issues.
+                        # The * will copy all files and directories in the current workspace in jenkins-master to the remote path on the target server.
                         scp -o StrictHostKeyChecking=no -r * ${REMOTE_USER}@${SERVER_IP}:${REMOTE_PATH}/
                     """
                 }
