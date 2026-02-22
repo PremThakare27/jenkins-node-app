@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        SERVER_IP      = '172.31.1.174'
+        SSH_CREDENTIAL = 'node-app-key'
+        REPO_URL       = 'https://github.com/iamtruptimane/node-js-app-CICD.git'
+        BRANCH         = 'main'
+        REMOTE_USER    = 'ubuntu'
+        REMOTE_PATH    = '/home/ubuntu/node-app'
+    }
+    
+    # It will run on jenkins-master node and execute the commands on the target server using ssh agent.
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: "${BRANCH}", url: "${REPO_URL}"
+            }
+        }
+
+        stage('Upload Files to target-server') {
+            steps {
+                sshagent([SSH_CREDENTIAL]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} 'mkdir -p ${REMOTE_PATH}'
+                        scp -o StrictHostKeyChecking=no -r * ${REMOTE_USER}@${SERVER_IP}:${REMOTE_PATH}/
+                    """
+                }
+            }
+        }
+
+        stage('Install Dependencies & Start App on the target server') {
+            steps {
+                sshagent([SSH_CREDENTIAL]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} '
+                            cd ${REMOTE_PATH} &&
+                            npm install &&
+                            pm2 start app.js --name node-app || pm2 restart node-app
+                        '
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Application deployed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed.'
+        }
+    }
+}
+
+
+
