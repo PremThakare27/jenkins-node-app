@@ -10,7 +10,6 @@ pipeline {
         REMOTE_PATH    = '/home/ubuntu/node-app'
     }
     
-    # It will run on jenkins-master node and execute the commands on the target server using ssh agent.
     stages {
         stage('Clone Repository') {
             steps {
