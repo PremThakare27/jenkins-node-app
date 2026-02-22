@@ -84,6 +84,12 @@ sudo apt update
 sudo apt install openjdk-17-jdk -y
 ```
 
+### 🛠 Install Jenkins
+
+Follow the official installation guide:
+
+👉 Jenkins: https://www.jenkins.io/doc/book/installing/
+
 ### 🚀 PM2 Installation Guide
 
 #### 📦 Install PM2 Globally
