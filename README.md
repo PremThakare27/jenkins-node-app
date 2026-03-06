@@ -22,6 +22,8 @@ This setup simulates a real-world DevOps CI/CD workflow using two EC2 instances 
 
 ## 🏗️ Architecture Overview
 
+![CI/CD Architecture Block Diagram](architecture-block-diagram.png)
+
 ### CI/CD Flow
 
 1. Developer pushes code to `main`
